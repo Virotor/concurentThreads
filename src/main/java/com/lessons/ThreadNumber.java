@@ -35,7 +35,6 @@ final public class ThreadNumber implements Runnable {
                     System.out.println(msg + currentValue.getAndIncrement());
                 }
                 semaphore.release();
-                sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
