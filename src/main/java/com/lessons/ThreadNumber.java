@@ -2,15 +2,14 @@ package com.lessons;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.lang.Thread.sleep;
+import java.util.concurrent.locks.ReentrantLock;
 
 final public class ThreadNumber implements Runnable {
 
     static private final AtomicInteger count = new AtomicInteger();
 
 
-    static Semaphore semaphore = new Semaphore(1);
+    static ReentrantLock semaphore = new ReentrantLock(true);
 
     private final int initialValue;
 
@@ -30,16 +29,18 @@ final public class ThreadNumber implements Runnable {
         String msg = " Thread name = " + thread.getName() + " Value = ";
         while (!thread.isInterrupted()) {
             try {
-                semaphore.acquire();
+                semaphore.lock();
                 if (currentValue.get() % 2 == initialValue) {
                     System.out.println(msg + currentValue.getAndIncrement());
+                }else{
+                    System.out.println(msg + "wait");
                 }
-                semaphore.release();
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } finally{
+                semaphore.unlock();
             }
-
-
         }
 
     }
